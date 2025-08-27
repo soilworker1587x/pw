@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>PersonaWorks Stage (Mock)</title>
-  <link rel="stylesheet" href="css/stage.css" />
-  <link rel="stylesheet" href="css/devconsole.css" />
+  <link rel="stylesheet" href="/stage.css" />
+  <link rel="stylesheet" href="../common/devconsole.css" />
 </head>
 <body>
   <div class="app" id="app">
@@ -105,8 +105,8 @@
   </div>
 
   <script type="module">
-    import { initStageDevConsole } from './js/stageDevConsoleWiring.js';
-    import { StageBus } from './js/stageBusHooks.js';
+    import { initStageDevConsole } from '../common/stageDevConsoleWiring.js';
+    import { StageBus } from '../common/stageBusHooks.js';
 
     // Expose StageBus to non-module stage.js
     window.PWStageBus = StageBus;
