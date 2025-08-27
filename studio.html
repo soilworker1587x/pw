@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PersonaWorks Studio</title>
+    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js" defer></script>
+    <link rel="stylesheet" href="css/studio.css" />
+    <script src="js/studio.js" defer></script>
+</head>
+
+<body>
+    <!-- PersonaWorks Studio top bar -->
+    <div id="pw-topbar" role="banner">
+        <div class="brand">PersonaWorks Studio</div>
+    </div>
+    <div class="page">
+        <div>
+            <!-- Tabs -->
+            <div class="tabs" id="tabs">
+                <div class="tab active" data-tab="essentials">Essentials</div>
+                <div class="tab" data-tab="appearance">Appearance</div>
+                <div class="tab" data-tab="voice">Speech</div>
+                <div class="tab" data-tab="narrative">Narrative</div>
+                <div class="tab" data-tab="relationships">Relationships</div>
+            </div>
+
+            <input type="hidden" id="char-id" />
+            <!-- Essentials -->
+            <div class="panel" id="panel-essentials">
+                <div class="grid">
+                    <!-- Gender (with tooltip) -->
+                    <div class="row">
+                        <label for="gender">Gender</label>
+                        <div>
+                            <div class="checks" id="gender-group">
+                                <label class="check"><input type="radio" name="gender" oninput="genderValue = this.value" value="male">
+                                    <span>Male</span></label>
+                                <label class="check"><input type="radio" name="gender" oninput="genderValue = this.value" value="female">
+                                    <span>Female</span></label>
+                                <label class="check"><input type="radio" name="gender" oninput="genderValue = this.value" value="non-binary" title="Coming soon" disabled>
+                                    <span>Non-binary</span></label>
+                            </div>
+                            <div class="hint">Used by Random name and preview wording.</div>
+                        </div>
+                    </div>
+
+                    <!-- Name -->
+                    <div class="row">
+                        <label for="name">Name <span class="req">*</span></label>
+                        <div>
+                            <div class="stack">
+                                <input id="nameBox" type="text" placeholder="Seris of Braymoor" />
+                                <button class="btn" id="name-random" type="button">Random</button>
+                            </div>
+                            <div class="hint" id="name-hint">Required. Keep it unique within your cast.</div>
+                        </div>
+                    </div>
+
+                    <!-- Age -->
+                    <div class="row" id="row-age">
+                        <label for="age">Age</label>
+                        <div>
+                            <input id="age" type="number" min="0" step="1" placeholder="e.g., 21" />
+                            <div class="hint" id="age-hint">Optional. Required (18+) only when NSFW is enabled.</div>
+                        </div>
+                    </div>
+
+                    <!-- Role -->
+                    <div class="row">
+                        <label for="role">Role / Archetype</label>
+                        <div><input id="role" type="text" placeholder="Scout, Archivist, Captain…" /></div>
+                    </div>
+
+                    <!-- Traits -->
+                    <div class="row">
+                        <label>Traits <span class="hint">(max 5)</span></label>
+                        <div>
+                            <div class="chips" id="traits-chips"></div>
+                            <div class="stack" style="margin-top:8px;">
+                                <input id="traits-input" type="text" placeholder="impulsive, loyal, curious" />
+                                <button class="btn" id="traits-add" type="button">Add</button>
+                            </div>
+                            <div class="hint">Enter/Comma to add. Click × to remove.</div>
+                        </div>
+                    </div>
+
+                    <!-- Goals -->
+                    <div class="row">
+                        <label>Goals <span class="hint">(top 3)</span></label>
+                        <div>
+                            <div id="goals-list"></div>
+                            <div style="margin-top:8px;"><button class="btn" id="goal-add" type="button">Add
+                                    Goal</button></div>
+                            <div class="hint">Order matters. Use ↑/↓ to rank.</div>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="row">
+                        <label>Tags</label>
+                        <div>
+                            <div class="chips" id="tags-chips"></div>
+                            <div class="stack" style="margin-top:8px;">
+                                <input id="tags-input" type="text" placeholder="ally, scout, braymoor" />
+                                <button class="btn" id="tags-add" type="button">Add</button>
+                            </div>
+                            <div class="hint">Free-form labels for search/filter.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appearance -->
+            <div class="panel" id="panel-appearance" style="display:none;">
+                <div class="grid">
+                    <div class="cardhead">
+                        <div style="font-weight:600;">Appearance</div>
+                        <label for="nsfw" class="nsfw"><input type="checkbox" id="nsfw" /> Allow NSFW Content</label>
+                    </div>
+
+                    <div class="row"><label for="species">Species</label>
+                        <div><input id="species" type="text" placeholder="human, elf, synth…" /></div>
+                    </div>
+                    <div class="row"><label for="build">Build</label>
+                        <div><input id="build" type="text" placeholder="athletic, lean, broad-shouldered…" /></div>
+                    </div>
+                    <div class="row"><label for="skin">Skin tone</label>
+                        <div><input id="skin" type="text" placeholder="olive, sun-kissed tan, porcelain…" /></div>
+                    </div>
+
+                    <div class="row">
+                        <label>Hair</label>
+                        <div class="subgrid">
+                            <div><span class="sublabel">Style</span><input id="hair-style" type="text"
+                                    placeholder="shoulder-length, close-cropped…" /></div>
+                            <div><span class="sublabel">Color</span><input id="hair-color" type="text"
+                                    placeholder="black, strawberry blonde…" /></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label>Eyes</label>
+                        <div class="subgrid">
+                            <div><span class="sublabel">Color</span><input id="eye-color" type="text"
+                                    placeholder="hazel, ice blue…" /></div>
+                            <div><span class="sublabel">Shape</span><input id="eye-shape" type="text"
+                                    placeholder="almond, round, hooded…" /></div>
+                        </div>
+                    </div>
+
+                    <div class="row"><label for="clothes">Clothing style</label>
+                        <div><input id="clothes" type="text" placeholder="scout leathers with patched elbows…" /></div>
+                    </div>
+
+                    <div class="row">
+                        <label>Notable marks</label>
+                        <div>
+                            <div class="chips" id="marks-chips"></div>
+                            <div class="stack" style="margin-top:8px;">
+                                <input id="marks-input" type="text" placeholder="jawline scar, sleeve tattoo" />
+                                <button class="btn" id="marks-add" type="button">Add</button>
+                            </div>
+                            <div class="hint">Enter/Comma to add; click × to remove.</div>
+                        </div>
+                    </div>
+
+                    <div class="row top">
+                        <label>Male</label>
+                        <div>
+                            <details>
+                                <summary style="cursor:pointer">Show options</summary>
+                                <div class="row" style="margin-top:8px;"><label for="male-facial-hair">Facial
+                                        hair</label>
+                                    <div><input id="male-facial-hair" type="text"
+                                            placeholder="neat stubble, goatee, short beard…" /></div>
+                                </div>
+                                <div class="row" id="male-nsfw-field-row" style="margin-top:8px; display:none;"><label
+                                        for="male-field">Field</label>
+                                    <div><input id="male-field" type="text" placeholder="(NSFW-only notes)" /></div>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+
+                    <div class="row top">
+                        <label>Female</label>
+                        <div>
+                            <details>
+                                <summary style="cursor:pointer">Show options</summary>
+                                <div class="row" style="margin-top:8px;"><label for="female-notes">Notes</label>
+                                    <div><input id="female-notes" type="text"
+                                            placeholder="hair accessories, makeup notes (optional)" /></div>
+                                </div>
+                                <div class="row" id="female-nsfw-field-row" style="margin-top:8px; display:none;"><label
+                                        for="female-field">Field</label>
+                                    <div><input id="female-field" type="text" placeholder="(NSFW-only notes)" /></div>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice -->
+            <div class="panel" id="panel-voice" style="display:none;">
+                <div class="grid">
+                    <div class="row"><label for="voice-archetype">Archetype</label>
+                        <div>
+                          <select id="voice-archetype" onchange="changeVoiceArchetype2()">
+                             <option value="custom">Custom</option>
+                              [voiceArchetypeList]
+                          </select>
+                          <div class="hint">Sets baseline tone and pacing.</div>
+                        </div>
+                    </div>
+                    <div class="row"><label for="voiceformality">Formality</label>
+                        <div><input id="voiceformality" type="range" min="0" max="100" value="40" />
+                            <div class="hint">Casual ⇄ Formal</div>
+                        </div>
+                    </div>
+                    <div class="row"><label>Sentence length</label>
+                        <div class="checks">
+                          <label class="check"><input type="radio" name="voice-sentlen" value="short" checked> <span>Short</span></label>
+                          <label class="check"><input type="radio" name="voice-sentlen" value="medium"> <span>Medium</span></label>
+                          <label class="check"><input type="radio" name="voice-sentlen" value="long"><span>Long</span></label>
+                        </div>
+                    </div>
+                    <div class="row"><label>Vocabulary</label>
+                        <div class="checks"><label class="check"><input type="radio" name="voice-vocab" value="simple"
+                                    checked> <span>Simple</span></label><label class="check"><input type="radio"
+                                    name="voice-vocab" value="neutral"> <span>Neutral</span></label><label
+                                class="check"><input type="radio" name="voice-vocab" value="advanced">
+                                <span>Advanced</span></label></div>
+                    </div>
+                    <div class="row"><label>Disfluency</label>
+                        <div class="checks">
+                          <label class="check"><input type="radio" name="voice-disf" value="off"
+                                    checked> <span>Off</span></label><label class="check"><input type="radio"
+                                    name="voice-disf" value="subtle"> <span>Subtle</span></label><label
+                                class="check"><input type="radio" name="voice-disf" value="realistic">
+                                <span>Realistic</span></label></div>
+                    </div>
+                    <div class="row top"><label>Emotion range</label>
+                        <div>
+                            <div class="subgrid">
+                                <div><span class="sublabel">Emotion</span><input id="voice-emotion-1" type="text"
+                                        placeholder="earnest" value="earnest" /></div>
+                                <div><span class="sublabel">Weight (0–100)</span><input id="voice-weight-1"
+                                        type="number" min="0" max="100" value="70" /></div>
+                            </div>
+                            <div class="subgrid" style="margin-top:8px;">
+                                <div><span class="sublabel">Emotion</span><input id="voice-emotion-2" type="text"
+                                        placeholder="sardonic" value="sardonic" /></div>
+                                <div><span class="sublabel">Weight (0–100)</span><input id="voice-weight-2"
+                                        type="number" min="0" max="100" value="30" /></div>
+                            </div>
+                            <div class="subgrid" style="margin-top:8px;">
+                                <div><span class="sublabel">Emotion</span><input id="voice-emotion-3" type="text"
+                                        placeholder="wry" value="wry" /></div>
+                                <div><span class="sublabel">Weight (0–100)</span><input id="voice-weight-3"
+                                        type="number" min="0" max="100" value="20" /></div>
+                            </div>
+                            <div class="hint">Up to three tones; weights are guides, not quotas.</div>
+                        </div>
+                    </div>
+                    <div class="row top"><label for="voice-catchphrases">Catchphrases</label>
+                        <div><textarea id="voice-catchphrases" rows="3"
+                                placeholder="One per line. Example: We'll do this right."></textarea>
+                            <div class="hint">Frequency cap applied later (e.g., ≤1 per 20 lines).</div>
+                        </div>
+                    </div>
+                    <div class="row top"><label for="voice-avoid">Avoid list</label>
+                        <div><textarea id="voice-avoid" rows="3" placeholder="Phrases to suppress (one per line)">for the mission\nfor the people</textarea>
+                            <div class="hint">Helps prevent repetition and cliché.</div>
+                        </div>
+                    </div>
+                    <div class="row"><label for="voice-addressing">Addressing style</label>
+                        <div><select id="voice-addressing">
+                                <option value="direct">Direct ("you")</option>
+                                <option value="inclusive">Inclusive ("we")</option>
+                                <option value="title">Title ("Captain")</option>
+                                <option value="affection">Affectionate ("love, dear")</option>
+                                <option value="formal">Formal ("sir/ma'am")</option>
+                            </select></div>
+                    </div>
+                    <div class="row top"><label>Repetition guardrails</label>
+                        <div class="grid" style="gap:8px">
+                            <div class="row"><label for="voice-burst">Burst limit</label>
+                                <div><input id="voice-burst" type="number" min="1" value="2" /></div>
+                            </div>
+                            <div class="row"><label for="voice-decay">Decay window (turns)</label>
+                                <div><input id="voice-decay" type="number" min="1" value="6" /></div>
+                            </div>
+                            <div class="row"><label for="voice-cooling">Topic cooling (lines)</label>
+                                <div><input id="voice-cooling" type="number" min="1" value="3" /></div>
+                            </div>
+                            <div class="hint">Advisory settings; enforcement happens in runtime logic.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Narrative -->
+            <div class="panel" id="panel-narrative" style="display:none;">
+                <div class="grid">
+                    <!-- Logline -->
+                    <div class="row top">
+                        <div class="label-with-tip">
+                            <label for="narr-logline">Logline</label>
+                            <span class="tt">
+                                <button type="button" class="tt-btn" aria-label="About logline"
+                                    aria-describedby="tip-narr-logline">?</button>
+                                <span id="tip-narr-logline" role="tooltip" class="tt-bubble">
+                                    One line that nails who wants what, why now, and what’s in the way. Keep it ≤ 35
+                                    words.
+                                </span>
+                            </span>
+                        </div>
+                        <div><textarea id="narr-logline" rows="2"
+                                placeholder="Who wants what, why now, and what’s in the way."></textarea>
+                            <div class="hint">Keep it tight and concrete (≤ 35 words).</div>
+                        </div>
+                    </div>
+
+                    <!-- Backstory pillars -->
+                    <div class="row top">
+                        <div class="label-with-tip">
+                            <label>Backstory pillars (3)</label>
+                            <span class="tt">
+                                <button type="button" class="tt-btn" aria-label="About backstory pillars"
+                                    aria-describedby="tip-narr-pillars">?</button>
+                                <span id="tip-narr-pillars" role="tooltip" class="tt-bubble">
+                                    Three immutable facts about the character. Short, concrete, and never contradicted
+                                    later.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="grid" style="gap:8px">
+                            <input id="narr-pillar-1" type="text" placeholder="Immutable fact #1" />
+                            <input id="narr-pillar-2" type="text" placeholder="Immutable fact #2" />
+                            <input id="narr-pillar-3" type="text" placeholder="Immutable fact #3" />
+                            <div class="hint">Non-negotiable canon; future writing shouldn’t contradict these.</div>
+                        </div>
+                    </div>
+
+                    <!-- Current situation -->
+                    <div class="row top">
+                        <div class="label-with-tip">
+                            <label for="narr-current">Current situation</label>
+                            <span class="tt">
+                                <button type="button" class="tt-btn" aria-label="About current situation"
+                                    aria-describedby="tip-narr-current">?</button>
+                                <span id="tip-narr-current" role="tooltip" class="tt-bubble">
+                                    3–5 sentences on where the character stands at story start—stakes, pressures, and
+                                    immediate context.
+                                </span>
+                            </span>
+                        </div>
+                        <div><textarea id="narr-current" rows="4"
+                                placeholder="3–5 sentences on where the character stands at story start."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Arc outline (5 beats) -->
+                    <div class="row top">
+                        <div class="label-with-tip">
+                            <label>Arc outline (5 beats)</label>
+                            <span class="tt">
+                                <button type="button" class="tt-btn" aria-label="About arc outline"
+                                    aria-describedby="tip-narr-arc">?</button>
+                                <span id="tip-narr-arc" role="tooltip" class="tt-bubble">
+                                    Hook • Complication • Midpoint shift • Crisis • Resolution. Use tight, telegraphic
+                                    one-liners—no prose.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="grid" style="gap:8px">
+                            <div>
+                                <div class="label-with-tip">
+                                    <label class="sublabel" for="narr-beat-hook">Hook</label>
+                                    <span class="tt">
+                                        <button type="button" class="tt-btn" aria-label="About Hook"
+                                            aria-describedby="tip-narr-hook">?</button>
+                                        <span id="tip-narr-hook" role="tooltip" class="tt-bubble">
+                                            The inciting jolt that yanks the character into motion. One tight line
+                                            focused on the disruption, not backstory.
+                                        </span>
+                                    </span>
+                                </div>
+                                <input id="narr-beat-hook" type="text" placeholder="Inciting spark" />
+                            </div>
+
+                            <div>
+                                <div class="label-with-tip">
+                                    <label class="sublabel" for="narr-beat-complication">Complication</label>
+                                    <span class="tt">
+                                        <button type="button" class="tt-btn" aria-label="About Complication"
+                                            aria-describedby="tip-narr-complication">?</button>
+                                        <span id="tip-narr-complication" role="tooltip" class="tt-bubble">
+                                            An escalation or new obstacle that raises stakes and narrows options. Must
+                                            logically follow the Hook.
+                                        </span>
+                                    </span>
+                                </div>
+                                <input id="narr-beat-complication" type="text"
+                                    placeholder="Tangle that raises stakes" />
+                            </div>
+
+                            <div>
+                                <div class="label-with-tip">
+                                    <label class="sublabel" for="narr-beat-midpoint">Midpoint shift</label>
+                                    <span class="tt">
+                                        <button type="button" class="tt-btn" aria-label="About Midpoint shift"
+                                            aria-describedby="tip-narr-midpoint">?</button>
+                                        <span id="tip-narr-midpoint" role="tooltip" class="tt-bubble">
+                                            A reversal, revelation, or commitment that changes the game or stakes—often
+                                            a point of no return.
+                                        </span>
+                                    </span>
+                                </div>
+                                <input id="narr-beat-midpoint" type="text" placeholder="Reversal / new info" />
+                            </div>
+
+                            <div>
+                                <div class="label-with-tip">
+                                    <label class="sublabel" for="narr-beat-crisis">Crisis</label>
+                                    <span class="tt">
+                                        <button type="button" class="tt-btn" aria-label="About Crisis"
+                                            aria-describedby="tip-narr-crisis">?</button>
+                                        <span id="tip-narr-crisis" role="tooltip" class="tt-bubble">
+                                            The hardest choice with the highest personal cost; forces a clash between
+                                            values and goals.
+                                        </span>
+                                    </span>
+                                </div>
+                                <input id="narr-beat-crisis" type="text" placeholder="Hard choice / cost" />
+                            </div>
+
+                            <div>
+                                <div class="label-with-tip">
+                                    <label class="sublabel" for="narr-beat-resolution">Resolution</label>
+                                    <span class="tt">
+                                        <button type="button" class="tt-btn" aria-label="About Resolution"
+                                            aria-describedby="tip-narr-resolution">?</button>
+                                        <span id="tip-narr-resolution" role="tooltip" class="tt-bubble">
+                                            The outcome and visible change in the character or situation—tie it back to
+                                            the logline and pillars.
+                                        </span>
+                                    </span>
+                                </div>
+                                <input id="narr-beat-resolution" type="text" placeholder="Outcome / change" />
+                            </div>
+
+                            <div class="hint">Short, telegraphic lines—no purple prose here.</div>
+                        </div>
+                    </div>
+
+                    <!-- POV & Tense -->
+                    <div class="row"><label for="narr-pov">POV &amp; Tense</label>
+                        <div class="subgrid"><select id="narr-pov">
+                                <option>First person</option>
+                                <option selected>Third person</option>
+                            </select><select id="narr-tense">
+                                <option>Past</option>
+                                <option selected>Present</option>
+                            </select></div>
+                    </div>
+
+                    <!-- Red lines -->
+                    <div class="row top">
+                        <label for="narr-redlines">Red lines</label>
+                        <div><textarea id="narr-redlines" rows="3"
+                                placeholder="Content/tones to avoid (one per line)"></textarea>
+                            <div class="hint">Syncs with Voice’s avoid list in the full build.</div>
+                        </div>
+                    </div>
+
+                    <!-- Canon facts -->
+                    <div class="row top">
+                        <label>Canon facts</label>
+                        <div>
+                            <ul id="narr-canon" class="list"></ul>
+                            <div class="hint">Auto-filled from Essentials/Appearance.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relationships -->
+            <div class="panel" id="panel-relationships" style="display:none;">
+                <div class="grid">
+                    <div class="row"><label for="rel-person">Person</label>
+                        <div><input id="rel-person" type="text" placeholder="Captain Mirel" /></div>
+                    </div>
+                    <div class="row"><label>Type & Role</label>
+                        <div class="subgrid">
+                            <div><span class="sublabel">Type</span><select id="rel-type">
+                                    <option>Mentor</option>
+                                    <option>Ally</option>
+                                    <option>Friend</option>
+                                    <option>Rival</option>
+                                    <option>Enemy</option>
+                                    <option>Family</option>
+                                    <option>Mentee</option>
+                                </select></div>
+                            <div><span class="sublabel">Specific role</span><input id="rel-role" type="text"
+                                    placeholder="e.g., Unit Commander" /></div>
+                        </div>
+                    </div>
+                    <div class="row"><label>Affinity (0–100)</label>
+                        <div><input id="rel-affinity" type="number" min="0" max="100" value="60" /></div>
+                    </div>
+                    <div class="row"><label>Trust (0–100)</label>
+                        <div><input id="rel-trust" type="number" min="0" max="100" value="50" /></div>
+                    </div>
+                    <div class="row"><label>Power dynamic</label>
+                        <div class="subgrid">
+                            <div><span class="sublabel">Stance</span><select id="rel-power">
+                                    <option>Equal</option>
+                                    <option>Dominant</option>
+                                    <option>Subordinate</option>
+                                    <option>Uneven (mentor over protégé)</option>
+                                </select></div>
+                            <div><span class="sublabel">Influence (0–100)</span><input id="rel-influence" type="number"
+                                    min="0" max="100" value="50" /></div>
+                        </div>
+                    </div>
+                    <div class="row top"><label for="rel-history">History</label>
+                        <div><textarea id="rel-history" rows="3"
+                                placeholder="2–4 sentences on how they met, turning points, conflicts."></textarea>
+                        </div>
+                    </div>
+                    <div class="row"><label>Status & Last interaction</label>
+                        <div class="subgrid">
+                            <div><span class="sublabel">Status</span><select id="rel-status">
+                                    <option>Active</option>
+                                    <option selected>Strained</option>
+                                    <option>Estranged</option>
+                                    <option>Distant</option>
+                                    <option>Deceased</option>
+                                    <option>Unknown</option>
+                                </select></div>
+                            <div><span class="sublabel">Last interaction</span><input id="rel-last" type="text"
+                                    placeholder="e.g., Confronted at the gate last night" /></div>
+                        </div>
+                    </div>
+                    <div class="row top"><label for="rel-boundaries">Boundaries</label>
+                        <div><textarea id="rel-boundaries" rows="3"
+                                placeholder="One per line (e.g., No public shaming)"></textarea>
+                            <div class="hint">Hard lines that shouldn’t be crossed.</div>
+                        </div>
+                    </div>
+                    <div class="row top"><label for="rel-promises">Promises</label>
+                        <div><textarea id="rel-promises" rows="3"
+                                placeholder="One per line (e.g., Mirel owes Seris an apology)"></textarea></div>
+                    </div>
+                    <div class="row top"><label for="rel-redlines">Red lines (relationship)</label>
+                        <div><textarea id="rel-redlines" rows="3"
+                                placeholder="Avoid themes/phrases here (one per line)."></textarea>
+                            <div class="hint">Works with Voice/Narrative guardrails later.</div>
+                        </div>
+                    </div>
+                    <div class="row"><label for="rel-tags">Tags</label>
+                        <div><input id="rel-tags" type="text" placeholder="mentor, watch, braymoor" /></div>
+                    </div>
+                    <div class="row"><label>&nbsp;</label>
+                        <div class="stack"><button class="btn" id="rel-add" type="button">Add
+                                Relationship</button><button class="btn" id="rel-clear" type="button">Clear</button>
+                        </div>
+                    </div>
+                    <div class="row top"><label>Existing</label>
+                        <div id="rel-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side rail -->
+        <aside class="side" id="side">
+            <div class="actions">
+                <button class="btn" id="theme-toggle" type="button">Light mode</button>
+                <button class="btn" id="reset" type="button">Clear Form</button>
+                <button class="btn" id="save" type="button" disabled>Save New</button>
+                <button class="btn" id="generate" type="button" disabled>Generate Full Profile</button>
+            </div>
+
+            <h3 style="margin-top:10px;">Mini Preview</h3>
+            <div class="divider"></div>
+
+            <div class="section">
+                <div class="section-title">Name</div>
+                <div id="prev-name" style="font-weight:600;">(unnamed)</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Appearance</div>
+                <div id="prev-appearance" class="hint">(add details in Appearance tab)</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Traits</div>
+                <div id="prev-traits" class="hint">—</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Goals</div>
+                <ol id="prev-goals" class="list"></ol>
+            </div>
+            <div class="section">
+                <div class="section-title">Tags</div>
+                <div id="prev-tags" class="hint">—</div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section">
+                <div class="section-title">Voice</div>
+                <div id="prev-voice" class="hint">—</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Narrative</div>
+                <div id="prev-narrative" class="hint">—</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Relationships</div>
+                <ul id="prev-rel" class="list"></ul>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section" id="status" aria-live="polite">
+                <div class="section-title">Status</div>
+                <div id="status-msg" class="hint status-warn">Name required.</div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Collapsible Saved Characters bar -->
+    <div id="pw-savedbar" class="pw-savedbar collapsed" role="complementary" aria-label="Saved characters">
+    
+ <div class="pw-saved-head">
+        <button id="pw-saved-toggle" class="btn tiny" aria-expanded="false" aria-controls="pw-saved-content">▲ Saved Characters</button>
+        <span class="muted" id="pw-saved-count">0</span>
+
+        <div class="actions">
+            <button id="pw-saved-refresh" class="btn tiny">Refresh</button>
+            <button id="pw-saved-export" class="btn tiny">Export</button>
+            <button id="pw-saved-import" class="btn tiny">Import</button>
+            <input id="pw-saved-import-file" type="file" accept="application/json,.json" style="display:none">
+        </div>
+    </div>
+    <div id="pw-saved-content" class="pw-saved-content" hidden>
+        <table class="pw-saved-table" aria-label="Saved Characters">
+            <colgroup>
+                <col style="width:14%" /> <!-- Name -->
+                <col style="width:12%"  /> <!-- Age -->
+                <col style="width:12%" /> <!-- Species -->
+                <col style="width:14%" /> <!-- Role -->
+                <col style="width:20%" /> <!-- Tags -->
+                <col style="width:10%" /> <!-- Voice Archetype -->
+                <col style="width:11%"  /> <!-- Updated -->
+                <col style="width:7%"  /> <!-- Actions -->
+            </colgroup>
+            <thead>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Species</th>
+                <th>Role</th>
+                <th>Tags</th>
+                <th>Voice</th>
+                <th>Updated</th>
+                <th class="pw-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="pw-saved-rows"></tbody>
+        </table>
+    </div>
+    </div>
+
+    <!-- Credit bar (very bottom) -->
+    <div id="pw-creditbar" class="pw-creditbar" role="contentinfo">
+    <span>PersonaWorks by Chaosground Creative Studio 2025</span>
+    </div>
+
+    <div id="pw-toast" class="pw-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+</body>
+
+</html>

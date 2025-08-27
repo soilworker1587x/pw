@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>PersonaWorks Stage (Mock)</title>
+  <link rel="stylesheet" href="css/stage.css" />
+  <link rel="stylesheet" href="css/devconsole.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="topbar">
+      <div class="brand">PersonaWorks Stage</div>
+      <span class="muted">mockup</span>
+      <div class="spacer"></div>
+      <button class="btn small" id="btn-console">Console</button>
+      <button class="btn small mobile" id="toggle-left">Characters</button>
+      <button class="btn small mobile" id="toggle-right">Details</button>
+    </div>
+    <aside class="left" id="left">
+      <div class="side-head">
+        <div style="font-weight:700">Characters</div>
+        <div class="spacer"></div>
+        <input type="file" id="import-file" accept="application/json" hidden>
+        <button class="btn small acc" id="import-btn">Import</button>
+        <button class="btn small" id="seed-demo" title="Load built-in sample">Load Demo</button>
+      </div>
+      <div class="side-body">
+        <div class="field" style="margin-bottom:10px">
+          <input type="search" id="char-search" placeholder="Search name, tag, species...">
+        </div>
+        <div id="char-list" class="list"></div>
+        <hr style="border:none;border-top:1px solid var(--line);margin:12px 0">
+        <div class="field" style="gap:6px">
+          <button class="btn" id="start-chats">Start Chats</button>
+          <button class="btn" id="start-group" title="Roundtable mock">Start Group</button>
+          <div class="spacer"></div>
+          <div class="muted" id="sel-count">0 selected</div>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="chat-head">
+        <div class="avatar" id="char-avatar">PC</div>
+        <div class="hgroup">
+          <div class="title" id="char-title">No character selected</div>
+          <div class="sub" id="char-sub">Import a bundle to get started</div>
+        </div>
+        <div class="controls">
+          <div class="field"><label for="temp">Temp</label><input type="number" id="temp" min="0" max="2" step="0.1" value="0.7" style="width:70px"></div>
+          <div class="field"><label for="max-tokens">Max</label><input type="number" id="max-tokens" min="256" step="64" value="1024" style="width:84px"></div>
+          <button class="btn small" id="clear-chat">Clear</button>
+        </div>
+      </div>
+      <div class="tabbar" id="session-tabs"></div>
+      <div class="transcript" id="transcript">
+        <div class="bubble assistant">
+          Welcome! Import your characters (left), pick one, and hit <b>Start Chats</b>. This is a mock assistant reply.
+          <div class="meta-row"><span>assistant</span><span>-</span><span>demo</span></div>
+        </div>
+      </div>
+      <div class="composer">
+        <textarea id="composer" placeholder="Message...  (Shift+Enter for newline)"></textarea>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <select id="send-target" title="Send To">
+            <option value="current" selected>Send to: Current</option>
+            <option value="all">Send to: All Open</option>
+            <option value="selected">Send to: Selected</option>
+          </select>
+          <button class="btn acc" id="send">Send</button>
+          <button class="btn" id="regen" title="Regenerate (demo)">R</button>
+        </div>
+      </div>
+    </main>
+    <aside class="right" id="right">
+      <div class="side-head">
+        <div style="font-weight:700">Details</div>
+        <div class="spacer"></div>
+        <button class="btn small" id="toggle-prompt">Prompt</button>
+      </div>
+      <div class="side-body">
+        <div class="section">
+          <div class="toggle" data-target="#prompt-wrap"><h4>System Prompt Preview</h4><span class="muted">- built from character</span></div>
+          <div id="prompt-wrap" class="pre" style="min-height:120px">Select a character to preview.</div>
+        </div>
+        <div class="section">
+          <div class="toggle" data-target="#char-details"><h4>Character Details</h4></div>
+          <div id="char-details" class="card"><div class="muted">None selected.</div></div>
+        </div>
+        <div class="section">
+          <div class="toggle" data-target="#notes"><h4>Notes</h4></div>
+          <textarea id="notes" rows="6" placeholder="Session notes..."></textarea>
+        </div>
+      </div>
+    </aside>
+    <div class="footer">
+      <div class="tokenbar" title="tokens used"><div style="width:30%"></div></div>
+      <span>tokens: <span id="tok-used">300</span>/<span id="tok-max">1024</span></span>
+      <span>-</span>
+      <span class="muted">bundle: <span id="bundle-info">none</span></span>
+      <div class="spacer"></div>
+      <span class="muted">mock ui</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initStageDevConsole } from './js/stageDevConsoleWiring.js';
+    import { StageBus } from './js/stageBusHooks.js';
+
+    // Expose StageBus to non-module stage.js
+    window.PWStageBus = StageBus;
+
+    // Local, dead-simple settings (swap for Dexie later if you want)
+    const settingsGet = async (k, d) => {
+      try { return JSON.parse(localStorage.getItem('pw_dc_' + k)) ?? d; } catch { return d; }
+    };
+    const settingsSet = async (k, v) => {
+      try { localStorage.setItem('pw_dc_' + k, JSON.stringify(v)); } catch {}
+    };
+
+    // We don’t need a wrapped model client yet; Stage fakes replies.
+    // Still init the console so it can log events we emit from stage.js:
+    const { devConsole } = initStageDevConsole({
+      mount: document.body,
+      settingsGet,
+      settingsSet,
+      // dummy client/endpoint (unused because stage.js handles mock replies)
+      modelClient: { send: async (p) => p }, 
+      endpoint: "/dev/unused"
+    });
+
+    // Wire the header toggle button
+    const btn = document.getElementById('btn-console');
+    if (btn) btn.addEventListener('click', () => devConsole.toggle());
+    // Hotkey: Ctrl + `
+    document.addEventListener('keydown', e => { if (e.ctrlKey && e.key === '`') devConsole.toggle(); });
+  </script>
+
+  <script src="js/stage.js" defer></script>
+</body>
+</html>
