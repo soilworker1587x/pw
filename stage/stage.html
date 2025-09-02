@@ -1,142 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>PersonaWorks Stage (Mock)</title>
-  <link rel="stylesheet" href="/stage.css" />
-  <link rel="stylesheet" href="../common/devconsole.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PersonaWorks Stage</title>
+
+  <!-- Shared + overrides -->
+  <link rel="stylesheet" href="../common/theme.css">
+  <link rel="stylesheet" href="../common/pw.base.css">
+  <link rel="stylesheet" href="stage.overrides.css">
+
+  <script type="module" src="../common/pw.theme.js" defer></script>
+  <script type="module" src="stage.js" defer></script>
 </head>
 <body>
-  <div class="app" id="app">
-    <div class="topbar">
-      <div class="brand">PersonaWorks Stage</div>
-      <span class="muted">mockup</span>
-      <div class="spacer"></div>
-      <button class="btn small" id="btn-console">Console</button>
-      <button class="btn small mobile" id="toggle-left">Characters</button>
-      <button class="btn small mobile" id="toggle-right">Details</button>
-    </div>
-    <aside class="left" id="left">
+
+  <div class="topbar">
+    <div class="brand">PersonaWorks Stage</div>
+    <div class="spacer"></div>
+    <button id="themeSwitch" class="theme-switch" role="switch" aria-checked="false" title="Toggle theme">
+      <svg class="icon moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path d="M21 12.8A9.2 9.2 0 1 1 11.2 3a7.2 7.2 0 0 0 9.8 9.8"/>
+      </svg>
+      <svg class="icon sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <g stroke-width="2" stroke-linecap="round" fill="none">
+          <line x1="12" y1="1.5" x2="12" y2="5.5"/>
+          <line x1="12" y1="18.5" x2="12" y2="22.5"/>
+          <line x1="1.5" y1="12" x2="5.5" y2="12"/>
+          <line x1="18.5" y1="12" x2="22.5" y2="12"/>
+          <line x1="4.2" y1="4.2" x2="6.9" y2="6.9"/>
+          <line x1="17.1" y1="17.1" x2="19.8" y2="19.8"/>
+          <line x1="4.2" y1="19.8" x2="6.9" y2="17.1"/>
+          <line x1="17.1" y1="6.9" x2="19.8" y2="4.2"/>
+        </g>
+      </svg>
+    </button>
+    <button class="btn small dev" id="btn-console">Console</button>
+  </div>
+
+  <div id="page" class="page">
+
+    
+    <aside class="left">
       <div class="side-head">
-        <div style="font-weight:700">Characters</div>
+        <strong>Characters</strong>
         <div class="spacer"></div>
-        <input type="file" id="import-file" accept="application/json" hidden>
-        <button class="btn small acc" id="import-btn">Import</button>
-        <button class="btn small" id="seed-demo" title="Load built-in sample">Load Demo</button>
+        <button class="btn small" id="new-char">New</button>
       </div>
       <div class="side-body">
-        <div class="field" style="margin-bottom:10px">
-          <input type="search" id="char-search" placeholder="Search name, tag, species...">
-        </div>
-        <div id="char-list" class="list"></div>
-        <hr style="border:none;border-top:1px solid var(--line);margin:12px 0">
-        <div class="field" style="gap:6px">
-          <button class="btn" id="start-chats">Start Chats</button>
-          <button class="btn" id="start-group" title="Roundtable mock">Start Group</button>
-          <div class="spacer"></div>
-          <div class="muted" id="sel-count">0 selected</div>
+        <div class="list">
+          <div class="char card">
+            <div class="avatar">A</div>
+            <div>
+              <div class="name">Aria Finch</div>
+              <div class="meta">Mage • last used 2h ago</div>
+            </div>
+          </div>
+          <div class="char card">
+            <div class="avatar">K</div>
+            <div>
+              <div class="name">Kaelen Dusk</div>
+              <div class="meta">Rogue • last used yesterday</div>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
+
     <main class="main">
       <div class="chat-head">
-        <div class="avatar" id="char-avatar">PC</div>
+        <div class="avatar">A</div>
         <div class="hgroup">
-          <div class="title" id="char-title">No character selected</div>
-          <div class="sub" id="char-sub">Import a bundle to get started</div>
+          <div class="title">Aria Finch</div>
+          <div class="sub">Mage • Neutral • Tags: magic, scholar</div>
         </div>
         <div class="controls">
-          <div class="field"><label for="temp">Temp</label><input type="number" id="temp" min="0" max="2" step="0.1" value="0.7" style="width:70px"></div>
-          <div class="field"><label for="max-tokens">Max</label><input type="number" id="max-tokens" min="256" step="64" value="1024" style="width:84px"></div>
-          <button class="btn small" id="clear-chat">Clear</button>
+          <button class="btn small" id="btn-reset">Reset</button>
+          <button class="btn small acc" id="btn-generate">Generate</button>
         </div>
       </div>
-      <div class="tabbar" id="session-tabs"></div>
-      <div class="transcript" id="transcript">
-        <div class="bubble assistant">
-          Welcome! Import your characters (left), pick one, and hit <b>Start Chats</b>. This is a mock assistant reply.
-          <div class="meta-row"><span>assistant</span><span>-</span><span>demo</span></div>
-        </div>
+
+      <div class="tabbar">
+        <div class="tab active">Conversation</div>
+        <div class="tab">Context</div>
+        <div class="tab">System</div>
       </div>
+
+      <section class="transcript">
+        <div class="bubble user">Tell me about the ley lines beneath the city.</div>
+        <div class="bubble assistant">They braid under the old aqueducts—count three junctions near the archives. Avoid the northern spur; it's volatile after dusk.</div>
+      </section>
+
       <div class="composer">
-        <textarea id="composer" placeholder="Message...  (Shift+Enter for newline)"></textarea>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <select id="send-target" title="Send To">
-            <option value="current" selected>Send to: Current</option>
-            <option value="all">Send to: All Open</option>
-            <option value="selected">Send to: Selected</option>
-          </select>
-          <button class="btn acc" id="send">Send</button>
-          <button class="btn" id="regen" title="Regenerate (demo)">R</button>
+        <textarea placeholder="Type a message..."></textarea>
+        <div>
+          <button class="btn">Send</button>
         </div>
       </div>
     </main>
-    <aside class="right" id="right">
-      <div class="side-head">
-        <div style="font-weight:700">Details</div>
-        <div class="spacer"></div>
-        <button class="btn small" id="toggle-prompt">Prompt</button>
-      </div>
+
+    <aside class="right">
+      <div class="side-head"><strong>Details</strong></div>
       <div class="side-body">
-        <div class="section">
-          <div class="toggle" data-target="#prompt-wrap"><h4>System Prompt Preview</h4><span class="muted">- built from character</span></div>
-          <div id="prompt-wrap" class="pre" style="min-height:120px">Select a character to preview.</div>
+        <div class="card">
+          <div class="section">
+            <div class="label">Species</div>
+            <div class="value">Human</div>
+          </div>
+          <div class="section">
+            <div class="label">Voice</div>
+            <div class="value">Measured • Formality 40</div>
+          </div>
         </div>
-        <div class="section">
-          <div class="toggle" data-target="#char-details"><h4>Character Details</h4></div>
-          <div id="char-details" class="card"><div class="muted">None selected.</div></div>
-        </div>
-        <div class="section">
-          <div class="toggle" data-target="#notes"><h4>Notes</h4></div>
-          <textarea id="notes" rows="6" placeholder="Session notes..."></textarea>
+        <div class="card">
+          <div class="section">
+            <div class="label">Notes</div>
+            <pre class="pre">Carries a cracked focus crystal; avoids speaking Celestine in public.</pre>
+          </div>
         </div>
       </div>
     </aside>
-    <div class="footer">
-      <div class="tokenbar" title="tokens used"><div style="width:30%"></div></div>
-      <span>tokens: <span id="tok-used">300</span>/<span id="tok-max">1024</span></span>
-      <span>-</span>
-      <span class="muted">bundle: <span id="bundle-info">none</span></span>
+
+    <footer class="footer">
+      <div>Ready.</div>
       <div class="spacer"></div>
-      <span class="muted">mock ui</span>
-    </div>
+      <div class="tokenbar" aria-label="Token usage"><div style="width: 32%;"></div></div>
+    </footer>
   </div>
 
+
+  <!-- Credit bar (very bottom) -->
+  <div id="pw-creditbar" class="pw-creditbar" role="contentinfo">
+      <span>PersonaWorks v1.0 by Chaosground Creative Studio 2025</span>
+  </div>
+
+  <!-- Theme + console wiring -->
   <script type="module">
-    import { initStageDevConsole } from '../common/stageDevConsoleWiring.js';
-    import { StageBus } from '../common/stageBusHooks.js';
-
-    // Expose StageBus to non-module stage.js
-    window.PWStageBus = StageBus;
-
-    // Local, dead-simple settings (swap for Dexie later if you want)
-    const settingsGet = async (k, d) => {
-      try { return JSON.parse(localStorage.getItem('pw_dc_' + k)) ?? d; } catch { return d; }
-    };
-    const settingsSet = async (k, v) => {
-      try { localStorage.setItem('pw_dc_' + k, JSON.stringify(v)); } catch {}
-    };
-
-    // We don’t need a wrapped model client yet; Stage fakes replies.
-    // Still init the console so it can log events we emit from stage.js:
-    const { devConsole } = initStageDevConsole({
-      mount: document.body,
-      settingsGet,
-      settingsSet,
-      // dummy client/endpoint (unused because stage.js handles mock replies)
-      modelClient: { send: async (p) => p }, 
-      endpoint: "/dev/unused"
+    // Basic console stub
+    document.getElementById('btn-console')?.addEventListener('click', () => {
+      console.log('[Stage] Console toggled — wire up your panel here.');
+      alert('Dev console: not wired yet.');
     });
-
-    // Wire the header toggle button
-    const btn = document.getElementById('btn-console');
-    if (btn) btn.addEventListener('click', () => devConsole.toggle());
-    // Hotkey: Ctrl + `
-    document.addEventListener('keydown', e => { if (e.ctrlKey && e.key === '`') devConsole.toggle(); });
   </script>
 
-  <script src="js/stage.js" defer></script>
 </body>
 </html>

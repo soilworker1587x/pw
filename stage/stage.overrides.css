@@ -1,0 +1,151 @@
+
+/* ===== App layout ===== */
+.page {
+  width: 100%;
+  display: grid;
+  padding: 4px 4px;
+  grid-template-columns: 280px 1fr 340px;
+  grid-template-rows: 1fr auto;
+}
+
+.left, .right {
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; min-height: 0; /* allow internal scrollers */
+}
+
+.right { border-right: none; border-left: 1px solid var(--line); }
+
+.muted { color: var(--muted); }
+
+.field { display: flex; gap: 8px; align-items: center; }
+.field label { font-size: 12px; color: var(--muted); }
+
+.side-head {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 10px;
+}
+
+.side-body { padding: 10px 12px; overflow: auto; flex: 1 1 auto; min-height: 0; }
+
+input[type="text"], input[type="search"], input[type="number"], select, textarea {
+  width: 100%;
+  background: #0b1428;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.list { display: flex; flex-direction: column; gap: 8px; }
+
+.card {
+  border: 1px solid var(--line);
+  background: #0b1426;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.char { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+.char:hover { background: #0f1a30; }
+
+.char .name { font-weight: 600; }
+.char .meta { font-size: 12px; color: var(--muted); }
+
+.chip {
+  display: inline-flex; gap: 6px; align-items: center;
+  font-size: 12px; padding: 3px 8px; background: var(--chip);
+}
+
+/* ===== Main column ===== */
+.main {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  min-width: 0; min-height: 0;
+}
+
+.chat-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-bottom: 1px solid var(--line);
+}
+
+.avatar {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: #141727; display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; color: #c4b5fd;
+}
+
+.hgroup { display: flex; flex-direction: column; }
+
+.hgroup .title { font-weight: 700; }
+
+.hgroup .sub { font-size: 12px; color: var(--muted); }
+
+.controls { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+
+.tabbar {
+  display: flex; gap: 6px; align-items: center;
+  padding: 8px 12px; border-bottom: 1px solid var(--line);
+  background: #0c152a; overflow: auto;
+}
+
+.tab {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border: 1px solid var(--line);
+  background: #0f172a; border-radius: 10px; cursor: pointer; white-space: nowrap;
+}
+
+.tab.active { border-color: var(--acc); background: #1a1530; }
+
+.tab .x { border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: 14px; }
+
+.transcript {
+  padding: 14px; overflow: auto; min-height: 0;
+}
+
+.bubble {
+  max-width: 820px; padding: 16px 12px;
+  border: 1px solid var(--line); border-radius: 14px;
+  margin: 8px 0; white-space: pre-wrap; line-height: 1.45;
+}
+
+.user      { background: #0f1a30; }
+.assistant { background: #122640; }
+
+.meta-row { display: flex; gap: 8px; align-items: center; margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+
+.composer {
+  padding: 10px 14px; border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr auto; gap: 10px;
+}
+
+.composer textarea { height: 72px; max-height: 35vh; resize: vertical; }
+
+.footer {
+  grid-column: 1 / -1; padding: 6px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.tokenbar { height: 6px; background: #0e172a; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; width: 200px; }
+
+.tokenbar > div { height: 100%; background: linear-gradient(90deg, #8b5cf6, #6366f1); }
+
+.pre {
+  background: #0a1222; border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px;
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #c7d2fe; white-space: pre-wrap;
+}
+
+.section { margin: 8px 0; display: flex; flex-direction: column; gap: 8px; }
+
+.toggle { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+.toggle h4 { margin: 0; font-size: 13px; }
+
+.hidden { display: none; }
