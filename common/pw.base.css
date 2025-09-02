@@ -1,0 +1,153 @@
+@layer base {
+  /* sizing + layout */
+  *, *::before, *::after { box-sizing: border-box; }
+  html:focus-within { scroll-behavior: smooth; }
+  body, h1, h2, h3, h4, p, figure, blockquote, dl, dd { margin: 0; }
+  body { min-height: 100vh; line-height: 1.5; }
+
+  /* media scales nicely */
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+
+  /* form controls inherit typography/colors */
+  input, button, textarea, select { font: inherit; color: inherit; }
+  button, [role="button"] { cursor: pointer; }
+
+  /* sensible lists/links, low specificity via :where() */
+  :where(ul, ol) { padding-left: 1.2rem; }
+  :where(a) { color: inherit; text-decoration: none; }
+
+  /* keep accessibility visible */
+  :where(:focus-visible) { outline: 2px solid Highlight; outline-offset: 2px; }
+
+  /* advertise supported themes to UAs */
+  :root { color-scheme: light dark; }
+}
+
+
+:root{ color-scheme: light dark; }
+
+/* ===== Theme Switch (sun right, moon left; thumb covers inactive) ===== */
+.theme-switch{
+  position:relative; inline-size:68px; block-size:36px; border-radius:999px;
+  border:1px solid var(--switch-border,#b9b9b9);
+  background: var(--switch-track,#e9e9e9);
+  padding:0; cursor:pointer; display:inline-block;
+}
+
+.theme-switch .icon{
+  position:absolute; inset-block-start:50%; transform:translateY(-50%);
+  pointer-events:none; color:inherit;
+}
+
+.theme-switch .sun { inset-inline-end:10px; }
+.theme-switch .moon{ inset-inline-start:10px; }
+
+.theme-switch .sun circle{ fill:currentColor; }
+.theme-switch .sun g{ stroke:currentColor; }
+.theme-switch .moon{ fill:none; stroke:currentColor; stroke-width:2; }
+
+.theme-switch[aria-checked="true"]::after{ inset-inline-start: calc(100% - 33px); }
+
+.theme-switch::after{
+  content:""; position:absolute; inset-block-start:3px; inset-inline-start:3px;
+  inline-size:30px; block-size:30px; border-radius:50%;
+  background: var(--switch-thumb,#fff);
+  box-shadow:0 1px 2px rgba(0,0,0,.25);
+  transition: inset-inline-start .2s ease; z-index:2;
+}
+
+/* Subtle emphasis by theme */
+:root[data-theme="light"] .theme-switch .sun  { opacity:1;   }
+:root[data-theme="light"] .theme-switch .moon { opacity:.35; filter:grayscale(1); }
+:root[data-theme="dark"]  .theme-switch .sun  { opacity:.35; filter:grayscale(1); }
+:root[data-theme="dark"]  .theme-switch .moon { opacity:1;   }
+
+/* Dark theme track/thumb */
+:root[data-theme="dark"] .theme-switch{
+  --switch-track:#2a2a2a; --switch-border:#3a3a3a; --switch-thumb:#0f0f0f;
+}
+
+.theme-switch .sun { color:#222; } 
+
+:root{
+  --pw-credit-h: 28px;
+  --pw-saved-open-h: 260px;
+  --pw-saved-collapsed-h: 52px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.35 ui-sans-serif, system-ui, Segoe UI, Roboto, Arial;
+  transition: background .2s, color .2s;
+}
+
+#pw-creditbar{
+  position:fixed; 
+  left:0; 
+  right:0; 
+  bottom:0; 
+  z-index:1000;
+  height: var(--pw-credit-h, 28px);
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  background: var(--pc-panel); 
+  color: var(--pc-muted);
+  border-top:1px solid var(--pc-border); 
+  font-size:12px;
+}
+
+/* Shared header (topbar) */
+.topbar {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 10px;
+  min-height: calc(var(--topbar-h, 48px) * 1.3);
+  padding-block: calc(var(--topbar-pad-y, 10px) * 1.3);
+  padding-inline: 20px 10px;
+  background: var(--pc-panel, #0c152a);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { font-weight: 700; letter-spacing: .3px; transform: scale(1.3); transform-origin: left center; line-height: 1; }
+.spacer { flex: 1; }
+
+.page {
+  display: grid;
+  gap: 24px;
+  padding: 24px 96px;
+  align-items: start;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.btn {
+  padding: 8px 12px; 
+  border:1px solid var(--line); 
+  border-radius:8px;
+  background: var(--surface2); 
+  color: var(--fg);
+  cursor:pointer; 
+  transition: background .15s, border-color .15s, transform .02s;
+}
+
+.stack { display:flex; gap:8px; align-items:center; }
+.stack > * { min-width: 0; }
+.stack > input, .stack > select, .stack > textarea { flex: 1; }
+
+.cardhead{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; padding:2px 0;
+}
+.cardhead .nsfw{
+  display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); white-space:nowrap;
+}
+.cardhead .nsfw input[type="checkbox"]{
+  inline-size:16px; block-size:16px; accent-color: var(--accent);
+}

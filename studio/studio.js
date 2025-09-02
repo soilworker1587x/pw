@@ -728,6 +728,7 @@ function addTagsFromInput() {
     });
     updatePreview();
 }
+
 on(maybe('#tags-add'), 'click', e => {
     e.preventDefault();
     addTagsFromInput();

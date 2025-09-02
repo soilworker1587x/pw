@@ -1,0 +1,69 @@
+/* Unified PersonaWorks Theme Variables */
+/* Dark theme is default (prioritized from Studio) */
+:root {
+  /* Base colors */
+  --bg: #0b111b;
+  --surface: #0f1623;
+  --surface2: #0c1320;
+  --panel: var(--surface);
+  /* Text and accents */
+  --fg: #e6edf3;
+  --text: var(--fg);
+  --muted: #9aa4b2;
+  --line: #1f2a3a;
+  --accent: #4ea1ff;
+  --acc: var(--accent);
+  --danger: #ff6b8a;
+  --bad: var(--danger);
+  --ok: #4ade80;
+  /* UI elements */
+  --pill: #152234;
+  --pillText: #cbd5e1;
+  --chip: var(--pill);
+  --active-tab: #285385;
+  --shadow: rgba(0, 0, 0, .35);
+  /* Backwards compatibility with Stage variables */
+  --pc-panel: var(--panel);
+  --pc-text: var(--text);
+  --pc-muted: var(--muted);
+  --pc-border: var(--line);
+  --pc-shadow: var(--shadow);
+  --row-even: rgba(255,255,255,.05);
+  --row-hover: rgba(78,161,255,.12);
+  --pw-saved-head-accent: rgba(78,161,255,.14);
+  /* Size tokens */
+  --action-btn-w: 180px;
+  --action-btn-h: 40px;
+}
+
+/* Light theme overrides (optional) */
+[data-theme="light"] {
+  --bg: #e9edf3;
+  --surface: #eef1f5;
+  --surface2: #e2e7ee;
+  --panel: var(--surface);
+  --fg: #0f172a;
+  --text: var(--fg);
+  --muted: #424c5a;
+  --line: #c9d0db;
+  --accent: #1f6feb;
+  --acc: var(--accent);
+  --danger: #e11d48;
+  --bad: var(--danger);
+  --ok: #16a34a;
+  --pill: #dfe4eb;
+  --pillText: #111827;
+  --chip: var(--pill);
+  --active-tab: #a6a6a6;
+  --shadow: rgba(2, 6, 23, .22);
+  --pc-panel: var(--panel);
+  --pc-text: var(--text);
+  --pc-muted: var(--muted);
+  --pc-border: var(--line);
+  --pc-shadow: var(--shadow);
+  --row-even: rgba(0,0,0,.03);
+  --row-hover: rgba(31,111,235,.08);
+  --pw-saved-head-accent: rgba(31,111,235,.10);
+  --action-btn-w: 180px;
+  --action-btn-h: 40px;
+}
