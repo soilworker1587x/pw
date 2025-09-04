@@ -30,11 +30,6 @@ export function hydrateVoiceArchetypes(list, current, onChange) {
     sel.onchange = e => onChange?.(e.target.value || '');
 }
 
-export function setArchtypeCustom() {
-    const a = $('#voice-archetype');
-    console.log(a);
-}
-
 export function updateVoiceArchetype(a) {
     // When null/empty, clear the inputs
     const set = (sel, v) => { const el = document.querySelector(sel); if (el) el.value = v ?? ''; };
@@ -156,3 +151,10 @@ export function updatePreview(character) {
     if (c.tags?.length) lines.push(`Tags: ${c.tags.join(', ')}`);
     //pre.textContent = lines.join('\n');
 }
+
+export function mirrorNameBoxIntoState() {
+    const el = maybe('#nameBox');
+    if (el) el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+globalThis.mirrorNameBoxIntoState = () => mirrorNameBoxIntoState();

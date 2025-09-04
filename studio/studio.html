@@ -58,9 +58,9 @@
                         <label for="gender">Gender</label>
                         <div>
                             <div class="checks" id="gender-group">
-                                <label class="check"><input type="radio" name="gender" oninput="genderValue = this.value" value="male" checked>
+                                <label class="check"><input type="radio" name="gender" id="gMale" oninput="genderValue = this.value" value="male" checked>
                                     <span>Male</span></label>
-                                <label class="check"><input type="radio" name="gender" oninput="genderValue = this.value" value="female">
+                                <label class="check"><input type="radio" name="gender" id="gFemale" oninput="genderValue = this.value" value="female">
                                     <span>Female</span></label>
                                 <label class="check"><input type="radio" name="gender" oninput="genderValue = this.value" value="non-binary" title="Coming soon" disabled>
                                     <span>Non-binary</span></label>
@@ -75,7 +75,7 @@
                         <div>
                             <div class="stack">
                                 <input id="nameBox" type="text" placeholder="Seris of Braymoor" />
-                                <button class="btn" id="namerandom" type="button">Random</button>
+                                <button class="btn" id="namerandom" onClick="generateName();" type="button">Random</button>
                             </div>
                             <div class="hint" id="name-hint">Required. Keep it unique within your cast.</div>
                         </div>
@@ -231,7 +231,9 @@
                 <div class="grid">
                     <div class="row"><label for="voice-archetype">Archetype</label>
                         <div>
-                          <select id="voice-archetype"></select>
+                          <select id="voice-archetype">
+                            [voiceArchetypeList]
+                          </select>
                           <div class="hint">Sets baseline tone and pacing.</div>
                         </div>
                     </div>
@@ -698,6 +700,9 @@
     </div>
 
     <div id="pw-toast" class="pw-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <textarea id="voiceArchetype" style="display:none;">[voiceArchetypeFull]</textarea>
+
     <script type="module">
         // Basic console stub
         document.getElementById('btn-console')?.addEventListener('click', () => {

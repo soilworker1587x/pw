@@ -180,14 +180,12 @@ const NAME_BANK = {
     last: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores'],
 };
 
-const provider = {
+export default {
     id: 'local',
     capabilities: { lists: true, ai: true },
     getList,
     getVoiceArchetypes() { return getList('voice_archetypes'); },
     getArchetype,
-    aiComplete,
-    getRandomName
+    getRandomName,
+    aiComplete
 };
-
-export default provider;

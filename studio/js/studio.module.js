@@ -31,7 +31,7 @@ function addFromComma(list, raw, mapFn = x => x) {
 }
 
 async function hydrateVoiceArchetypes() {
-    const list = (await platform?.getList?.('voice_archetypes')) || [];
+    const list = (await platform?.getVoiceArchetypes()) || [];
     const current = draft?.voice?.archetype || '';
     uiHydrateVoiceArchetypes(list, current, (val) => {
         draft.voice ??= {};
@@ -210,7 +210,8 @@ async function load(id) {
     refreshMarks();
     refreshGoals();
 
-    const voices = await platform.getList('voice_archetypes');
+
+    const voices = await platform.getVoiceArchetypes();
 }
 
 async function save() {
@@ -332,3 +333,14 @@ document.addEventListener('DOMContentLoaded', () => {
     load(); // initial character
     
 });
+
+export async function genRandomName() { 
+    platform.getRandomName(draft.gender).then(a => { 
+        if(!a) return;
+        draft.name = a; 
+        setNameField(a);
+        updatePreview(draft)
+    });
+};
+
+globalThis.generateName = () => genRandomName();

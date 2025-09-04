@@ -52,6 +52,74 @@ function normalizeArchetype(a = {}, fallbackName = '') {
   };
 }
 
+async function getVoiceDoc() {
+    return memo('va:doc', async () => {
+        const el = document.getElementById('voiceArchetype');
+        const text = (el?.value ?? '').trim();
+        const items = parseVoiceArchetypePC(text);
+        
+        const byId = new Map(items.map(a => [a.id, a]));
+        const list = items.map(a => ({ id: a.id, name: a.name || a.id }));
+        
+        return { list, items, byId };
+    });
+}
+
+function parseVoiceArchetypePC(text) {
+  const records = text.split('|').map(r => r.trim()).filter(Boolean);
+  return records.map(rec => {
+    const obj = {};
+    // split into key/value pairs
+    const pairs = rec.split(/,(?=\w+:|[a-zA-Z]+=)/g); 
+    // regex: split on commas only if followed by key:
+    for (let pair of pairs) {
+      let [k, v] = pair.split(/[:=]/); // handles id: / sentenceLength=
+      k = k.trim(); v = (v ?? '').trim();
+
+      switch (k) {
+        case 'formality':
+        case 'repguardBurst':
+        case 'repguardDecay':
+        case 'repguardCooling':
+          obj[k] = Number(v);
+          break;
+        case 'emotionWeights':
+          obj[k] = v ? v.split(',').map(n => Number(n.trim())) : [];
+          break;
+        case 'catchphrases':
+        case 'avoidList':
+          obj[k] = v ? v.split('+').map(s => s.trim()) : [];
+          break;
+        default:
+          obj[k] = v;
+      }
+    }
+
+    // Normalize into Stage/Studio shape
+    return {
+      id: obj.id,
+      name: obj.name,
+      formality: obj.formality,
+      sentenceLength: obj.sentenceLength,
+      vocabulary: obj.vocabulary,
+      disfluency: obj.disfluency === 'off' ? 'none' : obj.disfluency,
+      emotions: (obj.emotionNames || '').split(',').map((label, i) => ({
+        label: label.trim(),
+        weight: (obj.emotionWeights && obj.emotionWeights[i]) || 0
+      })).filter(e => e.label),
+      catchphrases: obj.catchphrases,
+      avoidList: obj.avoidList,
+      addressing: obj.addressingStyle,
+      guardrails: {
+        burstLimit: obj.repguardBurst,
+        decayTurns: obj.repguardDecay,
+        topicCooling: obj.repguardCooling
+      }
+    };
+  });
+}
+
+
 // ---- Perchance bridges (customize if your page exposes different globals) ----
 async function pcGetListRaw(name) {
   if (typeof globalThis.getPerchanceList === 'function') {
@@ -98,30 +166,28 @@ export default {
   id: 'perchance',
   capabilities: { lists: true, ai: true },
 
-  async getList(name) {
-    return memo(`list:${name}`, async () => {
-      const raw = await pcGetListRaw(name);
-      return normalizeList(raw);
-    });
-  },
+    async getList(name) {
+        const doc = await getVoiceDoc();
+        return doc.list;
+    },
 
-  getVoiceArchetypes() {
-    return this.getList('voice_archetypes');
-  },
+    async getVoiceArchetypes() {
+        const doc = await getVoiceDoc();
+        return doc.list;
+    },
 
-  async getArchetype(name) {
-    if (!name) return null;
-    const raw = await pcGetArchetypeRaw(name);
-    if (!raw) return null;
-    return normalizeArchetype(raw, name);
-  },
+    async getArchetype(name) {
+        if (!name) return null;
+        const voiceDoc = await getVoiceDoc();
+        return voiceDoc.byId.get(name) || null;
+    },
 
-  aiComplete(opts) {
-    return pcAIComplete(opts || {});
-  },
-  getRandomName(gender) {
-    return pcGetRandomName(gender);
-  }
+    aiComplete(opts) {
+        return pcAIComplete(opts || {});
+    },
+    getRandomName(gender) {
+        return pcGetRandomName(gender);
+    }
 };
 
 

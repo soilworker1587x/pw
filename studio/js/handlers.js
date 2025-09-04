@@ -32,7 +32,7 @@ export function bindEssentials({onName, onRole, onAge, onGender, onNSFW, onTrait
     on(maybe('#goal-add'), 'click', e => { e.preventDefault(); onGoalAdd?.(); });
     on(maybe('#tags-add'), 'click', e => {e.preventDefault(); onTags(maybe('#tags-input')?.value || '' ); });
     on(maybe('#tags-input'), 'keydown', e => { if(e.key === 'Enter' ) { e.preventDefault(); onTags(maybe('#tags-input')?.value || '')}});
-    on(maybe('#namerandom'), 'click', e => {e.preventDefault(); onRandName(maybe('#namerandom')?.value || '' ); });
+    //on(maybe('#namerandom'), 'click', e => {e.preventDefault(); onRandName(maybe('#namerandom')?.value || '' ); });
 }
 
 export function bindAppearance({onSpecies,onBuild,onSkin,onHairStyle,onHairColor,onEyeColor,onEyeShape,onClothes,onMarks}) {
