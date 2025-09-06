@@ -1,11 +1,12 @@
 /* Unified PersonaWorks Theme Variables */
-/* Dark theme is default (prioritized from Studio) */
+
 :root {
   /* Base colors */
   --bg: #0b111b;
   --surface: #0f1623;
   --surface2: #0c1320;
   --panel: var(--surface);
+
   /* Text and accents */
   --fg: #e6edf3;
   --text: var(--fg);
@@ -16,21 +17,27 @@
   --danger: #ff6b8a;
   --bad: var(--danger);
   --ok: #4ade80;
+  --btn-hover: #24334d;
+
   /* UI elements */
   --pill: #152234;
   --pillText: #cbd5e1;
   --chip: var(--pill);
   --active-tab: #285385;
   --shadow: rgba(0, 0, 0, .35);
-  /* Backwards compatibility with Stage variables */
-  --pc-panel: var(--panel);
-  --pc-text: var(--text);
-  --pc-muted: var(--muted);
-  --pc-border: var(--line);
-  --pc-shadow: var(--shadow);
+
+  --header-bg: #0c152a;
+  --header-bar-h: 66px;
+  --footer-bar-h: 28px;
+
+  /* New: Stage chat bubble tokens */
+  --bubble-user: #0f1a30;
+  --bubble-assistant: #122640;
+
   --row-even: rgba(255,255,255,.05);
   --row-hover: rgba(78,161,255,.12);
   --pw-saved-head-accent: rgba(78,161,255,.14);
+
   /* Size tokens */
   --action-btn-w: 180px;
   --action-btn-h: 40px;
@@ -56,14 +63,17 @@
   --chip: var(--pill);
   --active-tab: #a6a6a6;
   --shadow: rgba(2, 6, 23, .22);
-  --pc-panel: var(--panel);
-  --pc-text: var(--text);
-  --pc-muted: var(--muted);
-  --pc-border: var(--line);
-  --pc-shadow: var(--shadow);
+
   --row-even: rgba(0,0,0,.03);
   --row-hover: rgba(31,111,235,.08);
   --pw-saved-head-accent: rgba(31,111,235,.10);
+
+  --header-bg: #eef1f5;
+
   --action-btn-w: 180px;
   --action-btn-h: 40px;
+
+  /* New: Stage chat bubble tokens (light) */
+  --bubble-user: #ffffff;
+  --bubble-assistant: #f5f8fc;
 }

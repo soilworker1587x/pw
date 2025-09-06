@@ -7,15 +7,15 @@
 
   <!-- Shared + overrides -->
   <link rel="stylesheet" href="../common/theme.css">
-  <link rel="stylesheet" href="../common/pw.base.css">
-  <link rel="stylesheet" href="stage.overrides.css">
+  <link rel="stylesheet" href="../common/personaworks.css">
+  <link rel="stylesheet" href="stage.css">
 
   <script type="module" src="../common/pw.theme.js" defer></script>
   <script type="module" src="stage.js" defer></script>
 </head>
 <body>
 
-  <div class="topbar">
+  <div class="header">
     <div class="brand">PersonaWorks Stage</div>
     <div class="spacer"></div>
     <button id="themeSwitch" class="theme-switch" role="switch" aria-checked="false" title="Toggle theme">
@@ -39,11 +39,11 @@
     <button class="btn small dev" id="btn-console">Console</button>
   </div>
 
+  <!-- Grid container (2 cols) INCLUDING footer -->
   <div id="page" class="page">
 
-    
     <aside class="left">
-      <div class="side-head">
+      <div class="left-head">
         <strong>Characters</strong>
         <div class="spacer"></div>
         <button class="btn small" id="new-char">New</button>
@@ -100,44 +100,14 @@
       </div>
     </main>
 
-    <aside class="right">
-      <div class="side-head"><strong>Details</strong></div>
-      <div class="side-body">
-        <div class="card">
-          <div class="section">
-            <div class="label">Species</div>
-            <div class="value">Human</div>
-          </div>
-          <div class="section">
-            <div class="label">Voice</div>
-            <div class="value">Measured • Formality 40</div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="section">
-            <div class="label">Notes</div>
-            <pre class="pre">Carries a cracked focus crystal; avoids speaking Celestine in public.</pre>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <footer class="footer">
-      <div>Ready.</div>
-      <div class="spacer"></div>
-      <div class="tokenbar" aria-label="Token usage"><div style="width: 32%;"></div></div>
-    </footer>
   </div>
 
-
-  <!-- Credit bar (very bottom) -->
-  <div id="pw-creditbar" class="pw-creditbar" role="contentinfo">
-      <span>PersonaWorks v1.0 by Chaosground Creative Studio 2025</span>
+  <!-- Credit bar (very bottom, outside grid) -->
+  <div class="footer">
+    <span>PersonaWorks v1.0 by Chaosground Creative Studio 2025</span>
   </div>
 
-  <!-- Theme + console wiring -->
   <script type="module">
-    // Basic console stub
     document.getElementById('btn-console')?.addEventListener('click', () => {
       console.log('[Stage] Console toggled — wire up your panel here.');
       alert('Dev console: not wired yet.');

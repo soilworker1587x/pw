@@ -7,15 +7,15 @@
     <title>PersonaWorks Studio</title>
     <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js" defer></script>
     <link rel="stylesheet" href="../common/theme.css" />
-    <link rel="stylesheet" href="../common/pw.base.css" />
-    <link rel="stylesheet" href="studio.overrides.css" />
+    <link rel="stylesheet" href="../common/personaworks.css" />
+    <link rel="stylesheet" href="studio.css" />
     
     <script type="module" src="../common/pw.theme.js" defer></script>
     <script type="module" src="js/studio.module.js" defer></script>
 </head>
 
 <body>
-    <div class="topbar">
+    <div class="header">
         <div class="brand">PersonaWorks Studio</div>
         <div class="spacer"></div>
             <button id="themeSwitch" class="theme-switch" role="switch" aria-checked="false" title="Toggle theme">
@@ -39,7 +39,7 @@
         <button class="btn small dev" id="btn-console">Console</button>
     </div>
     <div class="page">
-        <div>
+        <div class="panels">
             <!-- Tabs -->
             <div class="tabs" id="tabs">
                 <div class="tab active" data-tab="essentials">Essentials</div>
@@ -71,9 +71,9 @@
 
                     <!-- Name -->
                     <div class="row">
-                        <label for="name">Name <span class="req">*</span></label>
+                        <label for="name">Name <span class="required">*</span></label>
                         <div>
-                            <div class="stack">
+                            <div class="fieldwithbutton">
                                 <input id="nameBox" type="text" placeholder="Seris of Braymoor" />
                                 <button class="btn" id="namerandom" onClick="generateName();" type="button">Random</button>
                             </div>
@@ -101,7 +101,7 @@
                         <label>Traits <span class="hint">(max 5)</span></label>
                         <div>
                             <div class="chips" id="traits-chips"></div>
-                            <div class="stack" style="margin-top:8px;">
+                            <div class="fieldwithbutton" style="margin-top:8px;">
                                 <input id="traits-input" type="text" placeholder="impulsive, loyal, curious" />
                                 <button class="btn" id="traits-add" type="button">Add</button>
                             </div>
@@ -125,7 +125,7 @@
                         <label>Tags</label>
                         <div>
                             <div class="chips" id="tags-chips"></div>
-                            <div class="stack" style="margin-top:8px;">
+                            <div class="fieldwithbutton" style="margin-top:8px;">
                                 <input id="tags-input" type="text" placeholder="ally, scout, braymoor" />
                                 <button class="btn" id="tags-add" type="button">Add</button>
                             </div>
@@ -181,7 +181,7 @@
                         <label>Notable marks</label>
                         <div>
                             <div class="chips" id="marks-chips"></div>
-                            <div class="stack" style="margin-top:8px;">
+                            <div class="fieldwithbutton" style="margin-top:8px;">
                                 <input id="marks-input" type="text" placeholder="jawline scar, sleeve tattoo" />
                                 <button class="btn" id="marks-add" type="button">Add</button>
                             </div>
@@ -238,7 +238,8 @@
                         </div>
                     </div>
                     <div class="row"><label for="voiceformality">Formality</label>
-                        <div><input id="voiceformality" type="range" min="0" max="100" value="40" />
+                        <div style="text-align:center;">
+                            <input id="voiceformality" type="range" min="0" max="100" value="40" width="150"/>
                             <div class="hint">Casual ⇄ Formal</div>
                         </div>
                     </div>
@@ -300,12 +301,12 @@
                     </div>
                     <div class="row"><label for="voice-addressing">Addressing style</label>
                         <div><select id="voice-addressing">
-                                <option value="direct">Direct ("you")</option>
-                                <option value="inclusive">Inclusive ("we")</option>
-                                <option value="title">Title ("Captain")</option>
-                                <option value="affection">Affectionate ("love, dear")</option>
-                                <option value="formal">Formal ("sir/ma'am")</option>
-                            </select></div>
+                            <option value="direct">Direct ("you")</option>
+                            <option value="inclusive">Inclusive ("we")</option>
+                            <option value="title">Title ("Captain")</option>
+                            <option value="affection">Affectionate ("love, dear")</option>
+                            <option value="formal">Formal ("sir/ma'am")</option>
+                        </select></div>
                     </div>
                     <div class="row top"><label>Repetition guardrails</label>
                         <div class="grid" style="gap:8px">
@@ -518,7 +519,8 @@
                     </div>
                     <div class="row"><label>Type & Role</label>
                         <div class="subgrid">
-                            <div><span class="sublabel">Type</span><select id="rel-type">
+                            <div><span class="sublabel">Type</span>
+                                <select id="rel-type">
                                     <option>Mentor</option>
                                     <option>Ally</option>
                                     <option>Friend</option>
@@ -670,12 +672,12 @@
             <table class="pw-saved-table" aria-label="Saved Characters">
                 <colgroup>
                     <col style="width:14%" /> <!-- Name -->
-                    <col style="width:12%"  /> <!-- Age -->
+                    <col style="width:10%"  /> <!-- Age -->
                     <col style="width:12%" /> <!-- Species -->
                     <col style="width:14%" /> <!-- Role -->
                     <col style="width:20%" /> <!-- Tags -->
                     <col style="width:10%" /> <!-- Voice Archetype -->
-                    <col style="width:11%"  /> <!-- Updated -->
+                    <col style="width:13%"  /> <!-- Updated -->
                     <col style="width:7%"  /> <!-- Actions -->
                 </colgroup>
                 <thead>
@@ -694,14 +696,14 @@
         </div>
     </div>
 
-    <!-- Credit bar (very bottom) -->
-    <div id="pw-creditbar" class="pw-creditbar" role="contentinfo">
-        <span>PersonaWorks v1.0 by Chaosground Creative Studio 2025</span>
-    </div>
-
     <div id="pw-toast" class="pw-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <textarea id="voiceArchetype" style="display:none;">[voiceArchetypeFull]</textarea>
+
+    <!-- Credit bar (very bottom) -->
+    <div class="footer">
+        <span>PersonaWorks v1.0 by Chaosground Creative Studio 2025</span>
+    </div>
 
     <script type="module">
         // Basic console stub
